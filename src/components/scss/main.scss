@@ -1,0 +1,33 @@
+@import "~bootstrap/scss/bootstrap";
+
+$primary: #008cba;
+
+div {
+    .card{
+        .card-header {
+            color: #fff;
+            background-color: $primary;
+        }
+    }
+}
+
+label {
+    color: black;
+    padding-right: 1rem;
+}
+
+form {
+    padding-right: 1rem;
+}
+
+input {
+    margin-right: 1rem;
+}
+
+textarea {
+    width: 100%;
+}
+
+button {
+    margin-right: 0.5rem;
+}
