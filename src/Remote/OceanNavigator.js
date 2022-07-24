@@ -53,7 +53,7 @@ export function GetDepthsPromise(dataset, variable) {
 
 export function GetPlot(query, fileName) {
   return axios({
-    url: url + query,
+    url: query,
     method: 'GET',
     responseType: 'blob', 
   }).then((response) => {

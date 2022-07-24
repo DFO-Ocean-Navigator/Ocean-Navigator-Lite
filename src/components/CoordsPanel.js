@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table"
@@ -6,11 +6,32 @@ import Table from "react-bootstrap/Table"
 const CoordsPanel = (props) => {  
   const [ enteredLat, setEnteredLat ] = useState('');
   const [ enteredLon, setEnteredLon ] = useState('');
-   
+  const [ tableEntries, setTableEntries] = useState([]);
+
+  useEffect(() => {
+    setTableEntries(props.coordinates.map(coord => {
+      return (
+        <tr key={'entry_' + coord.id}>
+          <td>{coord.row}</td>
+          <td>{coord.lon}</td>
+          <td>{coord.lat}</td>
+          <td>
+            <button onClick={()=>props.removeCoord(coord.id)}>X</button>
+          </td>
+        </tr>
+      );
+    }));
+  }, [props.coordinates]);
+
   const submitHandler = (e)=>{
     e.preventDefault();
     if (e.target[0].value.length > 0 & e.target[1].value.length >0) {
-      props.updateCoords([props.coordinates.length +1, e.target[0].value, e.target[1].value]);
+      props.updateCoords({
+        "row": props.coordinates.length + 1, 
+        "lon": e.target[0].value, 
+        "lat": e.target[1].value,
+        "id": e.target[0].value + e.target[1].value    
+      });
       setEnteredLat('');
       setEnteredLon('');
     }
@@ -24,28 +45,18 @@ const CoordsPanel = (props) => {
     setEnteredLon(parseFloat(e.target.value));
   };
 
-  const tableEntries = props.coordinates.map(coord => {
-    return (
-      <tr key={'entry_' + coord[0]}>
-        <td>{coord[0]}</td>
-        <td>{coord[1]}</td>
-        <td>{coord[2]}</td>
-      </tr>
-    );
-  });
-  
-
   return (
     <div>
       <Card>
         <Card.Header>Coordinate Options</Card.Header>
         <Card.Body>
-          <Table striped bordered hover>
+          <Table striped bordered hover size="sm">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Longitude</th>
                 <th>Latitude</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>

@@ -7,7 +7,7 @@ function submitQuery(q) {
     plotTitle: ''
   };
 
-  const coords = q.coords.map(coord=>[parseFloat(coord[1]),parseFloat(coord[2])]);
+  const coords = q.coords.map(coord=>[parseFloat(coord.lon),parseFloat(coord.lat)]);
   
   switch(q.type) {
     case "profile":
@@ -52,7 +52,7 @@ function submitQuery(q) {
       break;
   };
 
-  const queryUrl = "plot/?query=" + encodeURIComponent(JSON.stringify(query)) + '&save&format=csv&size=10x7&dpi=144'; 
+  const queryUrl = "https://staging.oceansdata.ca/api/v1.0/plot/?query=" + encodeURIComponent(JSON.stringify(query)) + '&save&format=csv&size=10x7&dpi=144'; 
 
   return queryUrl;
 };
