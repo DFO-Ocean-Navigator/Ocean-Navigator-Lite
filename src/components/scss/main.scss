@@ -31,3 +31,13 @@ textarea {
 button {
     margin-right: 0.5rem;
 }
+
+button.removeCoord {
+    background-color: transparent;
+    border: none;
+    font-weight: bold;
+}
+
+table {
+    text-align: center;
+}

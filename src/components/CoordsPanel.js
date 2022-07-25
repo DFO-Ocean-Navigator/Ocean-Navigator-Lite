@@ -16,7 +16,7 @@ const CoordsPanel = (props) => {
           <td>{coord.lon}</td>
           <td>{coord.lat}</td>
           <td>
-            <button onClick={()=>props.removeCoord(coord.id)}>X</button>
+            <button className='removeCoord' onClick={()=>props.removeCoord(coord.id)}>X</button>
           </td>
         </tr>
       );
@@ -50,13 +50,13 @@ const CoordsPanel = (props) => {
       <Card>
         <Card.Header>Coordinate Options</Card.Header>
         <Card.Body>
-          <Table striped bordered hover size="sm">
+          <Table striped bordered size="sm">
             <thead>
               <tr>
-                <th>#</th>
+                <th style={{width: '5%'}}>#</th>
                 <th>Longitude</th>
                 <th>Latitude</th>
-                <th></th>
+                <th style={{width: '5%', borderColor: 'transparent'}}></th>
               </tr>
             </thead>
             <tbody>
