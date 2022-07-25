@@ -33,6 +33,24 @@ function ONavLite() {
     setQuery(submitQuery(queryOptions))
   }, [queryOptions])
 
+  const removeCoord = (id) => {
+    let coords = coordinates;
+
+    const toRemove = coords.findIndex(coord => {
+      return coord.id === id ? true : false;
+    });
+
+    coords.map(coord => {
+      if (coord.row > coords[toRemove].row){
+        coord.row -= 1
+      }
+    })
+
+    coords.splice(toRemove, 1)
+
+    setCoordinates([...coords])
+  };
+
   const handleSubmit = () => {
     let fileName = plotType + '_' + selectedDataset.id + '_' + selectedVariable.id
     GetPlot(query, fileName)
@@ -57,10 +75,11 @@ function ONavLite() {
         coordinates={coordinates}
         updateCoords={(coords) => {setCoordinates(prevCoords => [...prevCoords, coords])}}
         clearCoords={() => {setCoordinates([])}}
+        removeCoord={(idx) => removeCoord(idx)}
       />
 
       <div style={{justifyContent: "right" }}>
-        <textarea id="queryurl" readOnly={true} rows="4" cols="50" value={query}></textarea>
+        <textarea id="queryurl" readOnly={true} rows="4" cols="50" wrap="hard" value={query}></textarea>
       </div>
       <div style={{display: "flex", justifyContent: "right" }}>
         <button onClick={handleSubmit}>Submit</button>
