@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 
 import Card from "react-bootstrap/Card";
 import Dropdown from './UI/Dropdown';
-import { GetDatasetsPromise, GetVariablesPromise} from '../Remote/OceanNavigator';
+import { GetDatasetsPromise, GetVariablesPromise} from '../Remote/ONavRequests';
 
 
 const DatasetPanel = (props) => {  

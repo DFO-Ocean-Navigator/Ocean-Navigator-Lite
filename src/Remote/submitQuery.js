@@ -4,12 +4,15 @@ function submitQuery(q) {
     dataset: q.dataset.id,
     variable: q.variable.id,
     names: [],
-    plotTitle: ''
+    plotTitle: "",
   };
 
-  const coords = q.coords.map(coord=>[parseFloat(coord.lon),parseFloat(coord.lat)]);
-  
-  switch(q.type) {
+  const coords = q.coords.map((coord) => [
+    parseFloat(coord.lon),
+    parseFloat(coord.lat),
+  ]);
+
+  switch (q.type) {
     case "profile":
       query.station = coords;
       query.showmap = 0;
@@ -23,39 +26,53 @@ function submitQuery(q) {
       query.endtime = q.endTime;
       break;
     case "transect":
-      query.time = q.time;
-      query.scale = q.scale;
-      query.path = q.path;
-      query.showmap = q.showmap;
-      query.surfacevariable = q.surfacevariable;
-      query.linearthresh = q.linearthresh;
-      query.name = q.name;
-      query.depth_limit = q.depth_limit;
-      query.colormap = q.colormap;
-      query.selectedPlots = q.selectedPlots;
+      query.time = q.startTime;
+      query.scale = `${q.variable.scale[0]},${q.variable.scale[1]},auto`;
+      query.path = coords;
+      query.showmap = 0;
+      query.surfacevariable = "none";
+      query.linearthresh = 200;
+      query.depth_limit = 0;
+      query.selectedPlots = "0,1,1";
       break;
     case "map":
-      query.variable = q.variable;
-      query.time = q.time;
-      query.scale = q.scale;
+      query.time = q.startTime;
+      query.scale = `${q.variable.scale[0]},${q.variable.scale[1]},auto`;
       query.depth = q.depth;
-      query.colormap = q.colormap;
-      query.area = q.area;
-      query.projection = q.projection;
-      query.bathymetry = q.bathymetry;
-      query.quiver = q.quiver;
-      query.contour = q.contour;
-      query.showarea = q.showarea;
-      query.interp = q.interp;
-      query.radius = q.radius;
-      query.neighbours = q.neighbours;
+      query.colormap = "default";
+      query.area = [
+        {
+          innerrings: [],
+          name: "",
+          polygons: [coords],
+        },
+      ];
+      query.projection = "EPSG:3857";
+      query.quiver = {
+        colormap: "default",
+        magnitude: "length",
+        variable: "none",
+      };
+      query.contour = {
+        colormap: "default",
+        hatch: false,
+        legend: true,
+        levels: "auto",
+        variable: "none",
+      };
+      query.showarea = true;
+      query.interp = "gaussian";
+      query.radius = 25;
+      query.neighbours = 10;
       break;
-  };
+  }
 
-  const queryUrl = "https://staging.oceansdata.ca/api/v1.0/plot/?query=" + encodeURIComponent(JSON.stringify(query)) + '&save&format=csv&size=10x7&dpi=144'; 
+  const queryUrl =
+    "https://staging.oceansdata.ca/api/v1.0/plot/?query=" +
+    encodeURIComponent(JSON.stringify(query)) +
+    "&save&format=csv&size=10x7&dpi=144";
 
   return queryUrl;
-};
+}
 
-
-export default submitQuery
+export default submitQuery;

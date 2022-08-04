@@ -4,7 +4,7 @@ import DatasetPanel from './DatasetPanel';
 import PlotPanel from './PlotPanel';
 import CoordsPanel from './CoordsPanel';
 import submitQuery from '../Remote/submitQuery';
-import { GetPlot } from '../Remote/OceanNavigator'
+import { GetPlot } from '../Remote/ONavRequests'
 
 require("./scss/main.scss");
 
