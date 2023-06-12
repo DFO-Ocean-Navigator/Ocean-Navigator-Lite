@@ -3,111 +3,66 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import Dropdown from "./UI/Dropdown.jsx";
-import { GetTimestampsPromise, GetDepthsPromise } from "../remote/ONavRequests";
+
+import TimePicker from "./TimePicker.jsx";
 
 const PlotPanel = (props) => {
   const [selectedTab, setSelectedTab] = useState("profile");
-  const [timestamps, setTimestamps] = useState([]);
-  const [depths, setDepths] = useState([]);
-  const [hasDepth, setHasDepth] = useState(false);
 
   useEffect(() => {
-    if (props.selectedVariable) {
-      GetTimestampsPromise(props.selectedDataset, props.selectedVariable).then(
-        (result) => {
-          setTimestamps(result.data);
-          props.updateStartTime(result.data[0].id);
-          props.updateEndTime(result.data[0].id);
-        }
-      );
-      GetDepthsPromise(props.selectedDataset, props.selectedVariable).then(
-        (result) => {
-          setDepths(result.data);
-          if (result.data[0]) {
-            props.updateDepth(result.data[0].id);
-          } else {
-            props.updateDepth([]);
-          }
-        }
-      );
-    }
-  }, [props.selectedDataset, props.selectedVariable]);
-
-  useEffect(() => {
-    if (
-      props.selectedVariable &&
-      depths.length === 0 &&
-      (selectedTab === "profile" || selectedTab === "transect")
-    ) {
+    if (props.dataset.variable_two_dimensional) {
       setSelectedTab("timeseries");
     }
-    setHasDepth(depths.length > 0);
-  }, [depths]);
+  }, [props.dataset]);
 
   const handleTabChange = (tabId) => {
     setSelectedTab(tabId);
     props.updatePlotType(tabId);
   };
 
-  const updateStartTime = (timestamp) => {
-    props.updateStartTime(timestamp);
-  };
-
-  const updateEndTime = (timestamp) => {
-    props.updateEndTime(timestamp);
-  };
-
-  const updateDepth = (depth) => {
-    props.updateDepth(depth);
-  };
-
-  const starTimeDropdown = (
-    <div key="startTime">
-      <label>Start Time:</label>
-      <Dropdown
-        key="startTimeDropdown"
-        data={timestamps}
-        onChange={updateStartTime}
-      />
-    </div>
-  );
-  const endTimeDropdown = (
-    <div key="endTime">
-      <label>End Time:</label>
-      <Dropdown
-        key="endTimeDropdown"
-        data={timestamps}
-        onChange={updateEndTime}
-      />
-    </div>
-  );
-  const depthsDropdown = hasDepth ? (
-    <div key="depth">
-      <label>Depth:</label>
-      <Dropdown key="depthsDropdown" data={depths} onChange={updateDepth} />
-    </div>
-  ) : null;
-
-  let selectors = [];
-  switch (selectedTab) {
-    case "profile":
-    case "transect":
-      selectors = [starTimeDropdown];
-      break;
-    case "timeseries":
-      selectors = [starTimeDropdown, endTimeDropdown, depthsDropdown];
-      break;
-    case "map":
-      selectors = [starTimeDropdown, depthsDropdown];
-      break;
+  let timeSelector = null;
+  if (props.dataset.time > 0 && selectedTab === "timeseries") {
+    timeSelector = (
+      <div className="timeSelector-div">
+        <TimePicker
+          key="starttime"
+          id="starttime"
+          state={props.dataset.starttime}
+          title={"Start Time (UTC)"}
+          onUpdate={props.updateDataset}
+          max={props.dataset.time}
+          dataset={props.dataset}
+          timestamps={props.timestamps}
+        />
+        <TimePicker
+          key="time"
+          id="time"
+          state={props.dataset.time}
+          title={"End Time (UTC)"}
+          onUpdate={props.updateDataset}
+          min={props.dataset.starttime}
+          dataset={props.dataset}
+          timestamps={props.timestamps}
+        />
+      </div>
+    );
+  } else if (props.dataset.time > 0) {
+    timeSelector = (
+      <div className="timeSelector-div">
+        <TimePicker
+          key="time"
+          id="time"
+          state={props.dataset.time}
+          onUpdate={props.updateDataset}
+          title={"Time (UTC)"}
+          dataset={props.dataset}
+          timestamps={props.timestamps}
+        />
+      </div>
+    );
   }
 
-  const inputs = (
-    <div key="optionsDiv" style={{ display: "flex" }}>
-      {selectors}
-    </div>
-  );
+  const hasDepth = props.dataset.variable_two_dimensional !== true;
 
   return (
     <div>
@@ -126,10 +81,10 @@ const PlotPanel = (props) => {
               title="Profile"
               disabled={!hasDepth}
             >
-              {inputs}
+              {timeSelector}
             </Tab>
             <Tab key="ts" eventKey="timeseries" title="Virtual Mooring">
-              {inputs}
+              {timeSelector}
             </Tab>
             <Tab
               key="transect"
@@ -137,10 +92,10 @@ const PlotPanel = (props) => {
               title="Transect"
               disabled={!hasDepth}
             >
-              {inputs}
+              {timeSelector}
             </Tab>
             <Tab key="map" eventKey="map" title="Area">
-              {inputs}
+              {timeSelector}
             </Tab>
           </Tabs>
         </Card.Body>

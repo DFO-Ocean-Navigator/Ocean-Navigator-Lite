@@ -1,5 +1,10 @@
 @import "~bootstrap/scss/bootstrap";
-@import 'components/OceanNavigatorLite';
+@import "components/OceanNavigatorLite";
+@import "components/TimePicker";
+@import "components/DailyCalendar";
+@import "components/MonthlyCalendar";
+@import "components/SeasonalCalendar";
+@import "components/PlotPanel";
 
 $primary: #008cba;
 

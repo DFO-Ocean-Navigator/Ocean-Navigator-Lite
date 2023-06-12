@@ -28,6 +28,10 @@ const DatasetPanel = (props) => {
     }
   }, [availableDatasets]);
 
+  useEffect(() => {
+    props.updateDataset("dataset", dataset);
+  }, [dataset]);
+
   const changeDataset = (newDataset, currentVariable) => {
     const currentDataset = availableDatasets.filter((d) => {
       return d.id === newDataset;
@@ -117,37 +121,17 @@ const DatasetPanel = (props) => {
     }
 
     let newDataset = {};
-    let newOptions = {};
 
-    // Multiple variables were selected
-    // so don't update everything else
-    if (newVariable instanceof HTMLCollection) {
-      let variables = Array.from(newVariable).map((o) => o.value);
-      let variableRanges = {};
-      variables.forEach((v) => {
-        variableRanges[v] = null;
-      });
-      newDataset = {
-        variable: variables,
-        variable_range: variableRanges,
-        variable_two_dimensional: false,
-      };
-      if (variables.length === 1) {
-        const variable = datasetVariables.find((v) => v.id === variables[0]);
-        newDataset = { ...newDataset, variable_scale: variable.scale };
-      }
-    } else {
-      const variable = datasetVariables.find((v) => v.id === newVariable);
-      let newVariableRange = {};
-      newVariableRange[newVariable] = null;
+    const variable = datasetVariables.find((v) => v.id === newVariable);
+    let newVariableRange = {};
+    newVariableRange[newVariable] = null;
 
-      newDataset = {
-        variable: newVariable,
-        variable_scale: variable.scale,
-        variable_range: newVariableRange,
-        variable_two_dimensional: variable.two_dimensional,
-      };
-    }
+    newDataset = {
+      variable: newVariable,
+      variable_scale: variable.scale,
+      variable_range: newVariableRange,
+      variable_two_dimensional: variable.two_dimensional,
+    };
 
     setDataset((prevDataset) => {
       return { ...prevDataset, ...newDataset };
@@ -175,6 +159,14 @@ const DatasetPanel = (props) => {
 
   const nothingChanged = (key, value) => {
     return dataset[key] === value;
+  };
+
+  const datasetChanged = (key) => {
+    return key === "dataset";
+  };
+
+  const variableChanged = (key) => {
+    return key === "variable";
   };
 
   let datasetSelector = (

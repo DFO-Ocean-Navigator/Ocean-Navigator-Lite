@@ -108,7 +108,7 @@ function OceanNavigatorLite() {
         removeCoord={(idx) => removeCoord(idx)}
       />
 
-      <div style={{ justifyContent: "right" }}>
+      <div className="query-container">
         <textarea
           id="queryurl"
           readOnly={true}
@@ -118,7 +118,7 @@ function OceanNavigatorLite() {
           value={query}
         ></textarea>
       </div>
-      <div style={{ display: "flex", justifyContent: "right" }}>
+      <div className="submit-container">
         <button onClick={handleSubmit}>Submit</button>
       </div>
     </div>
