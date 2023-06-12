@@ -1,0 +1,14 @@
+.background {
+    display: table;
+    width: 100%;
+    height: 100%;
+    padding: 200px 0;
+    text-align: center;
+    color: #fcfdfd;
+    background: url("/static/intro-bg.jpg") no-repeat bottom center scroll;
+    background-color: black;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }

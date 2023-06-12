@@ -3,8 +3,8 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import Dropdown from "./UI/Dropdown";
-import { GetTimestampsPromise, GetDepthsPromise } from "../Remote/ONavRequests";
+import Dropdown from "./UI/Dropdown.jsx";
+import { GetTimestampsPromise, GetDepthsPromise } from "../remote/ONavRequests";
 
 const PlotPanel = (props) => {
   const [selectedTab, setSelectedTab] = useState("profile");

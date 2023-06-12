@@ -1,11 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import ONavLite from './components/ONavLite'
+import OceanNavigatorLite from './components/OceanNavigatorLite.jsx'
+
+require("./stylesheets/main.scss");
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
 root.render(
   <React.StrictMode>
-    <ONavLite />
+    <OceanNavigatorLite />
   </React.StrictMode>
 );
