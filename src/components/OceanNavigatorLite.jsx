@@ -1,34 +1,63 @@
 import React, { useState, useEffect } from "react";
 
-import DatasetPanel from './DatasetPanel.jsx';
-import PlotPanel from './PlotPanel.jsx';
-import CoordsPanel from './CoordsPanel.jsx';
+import DatasetPanel from "./DatasetPanel.jsx";
+import PlotPanel from "./PlotPanel.jsx";
+import CoordsPanel from "./CoordsPanel.jsx";
 import submitQuery from "../remote/SubmitQuery";
 import { GetPlot } from "../remote/ONavRequests";
 
+const DATASET_DEFAULTS = Object.freeze({
+  id: "giops_day",
+  attribution: "",
+  quantum: "day",
+  depth: 0,
+  time: -1,
+  starttime: -1,
+  variable: "votemper",
+  quiverVariable: "None",
+  variable_scale: [-5, 30],
+  variable_two_dimensional: false,
+});
+
 function OceanNavigatorLite() {
   const [plotType, setPlotType] = useState("profile");
-  const [selectedDataset, setSelectedDataset] = useState({});
-  const [selectedVariable, setSelectedVariable] = useState({});
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
-  const [selectedDepth, setSelectedDepth] = useState("");
+  const [dataset, setDataset] = useState(DATASET_DEFAULTS);
+  const [timestamps, setTimestamps] = useState([]);
   const [coordinates, setCoordinates] = useState([]);
   const [query, setQuery] = useState("");
 
-  const queryOptions = {
-    type: plotType,
-    dataset: selectedDataset,
-    variable: selectedVariable,
-    startTime: startTime,
-    endTime: endTime,
-    depth: selectedDepth,
-    coords: coordinates,
+  // const queryOptions = {
+  //   type: plotType,
+  //   dataset: dataset,
+  //   variable: variable,
+  //   startTime: startTime,
+  //   endTime: endTime,
+  //   depth: selectedDepth,
+  //   coords: coordinates,
+  // };
+
+  // useEffect(() => {
+  //   setQuery(submitQuery(queryOptions));
+  // }, [queryOptions]);
+
+  const updateDataset = (key, value) => {
+    switch (key) {
+      case "dataset":
+        setDataset(value);
+        break;
+      default:
+        setDataset((prevDataset) => {
+          return {
+            ...prevDataset,
+            [key]: value,
+          };
+        });
+    }
   };
 
-  useEffect(() => {
-    setQuery(submitQuery(queryOptions));
-  }, [queryOptions]);
+  const updateTimestamps = (newTimestamps) => {
+    setTimestamps(newTimestamps);
+  };
 
   const removeCoord = (id) => {
     let coords = coordinates;
@@ -49,30 +78,33 @@ function OceanNavigatorLite() {
   };
 
   const handleSubmit = () => {
-    let fileName =
-      plotType + "_" + selectedDataset.id + "_" + selectedVariable.id;
+    let fileName = plotType + "_" + dataset.id + "_" + dataset.variable;
     GetPlot(query, fileName);
   };
 
   return (
     <div className="onav-lite">
       <DatasetPanel
-        selectedDataset={selectedDataset.id}
-        updateDataset={(ds)=>{setSelectedDataset(ds)}}
-        updateVariable={(v)=>{setSelectedVariable(v)}}
+        dataset={dataset}
+        updateDataset={updateDataset}
+        updateTimestamps={updateTimestamps}
       />
       <PlotPanel
-        selectedDataset={selectedDataset.id}
-        selectedVariable={selectedVariable.id}
-        updatePlotType={(plotType) => {setPlotType(plotType)}}
-        updateStartTime={(ts) => {setStartTime(ts)}}
-        updateEndTime={(ts) => {setEndTime(ts)}}
-        updateDepth={(depth) => {setSelectedDepth(depth)}}
+        dataset={dataset}
+        timestamps={timestamps}
+        updateDataset={updateDataset}
+        updatePlotType={(newPlotType) => {
+          setPlotType(newPlotType);
+        }}
       />
       <CoordsPanel
         coordinates={coordinates}
-        updateCoords={(coords) => {setCoordinates(prevCoords => [...prevCoords, coords])}}
-        clearCoords={() => {setCoordinates([])}}
+        updateCoords={(coords) => {
+          setCoordinates((prevCoords) => [...prevCoords, coords]);
+        }}
+        clearCoords={() => {
+          setCoordinates([]);
+        }}
         removeCoord={(idx) => removeCoord(idx)}
       />
 
