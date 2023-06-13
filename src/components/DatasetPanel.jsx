@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 import Card from "react-bootstrap/Card";
+import Modal from "react-bootstrap/Modal";
+import ProgressBar from "react-bootstrap/ProgressBar";
+
 import {
   GetDatasetsPromise,
   GetVariablesPromise,
@@ -17,6 +20,8 @@ const DatasetPanel = (props) => {
   const [datasetVariables, setDatasetVariables] = useState([]);
   const [datasetDepths, setDatasetDepths] = useState([]);
   const [datasetTimestamps, setDatasetTimestamps] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [loadingPercent, setLoadingPercent] = useState(0);
 
   useEffect(() => {
     GetDatasetsPromise().then((result) => {
@@ -39,11 +44,15 @@ const DatasetPanel = (props) => {
       return d.id === newDataset;
     })[0];
 
+    setLoading(true);
+    setLoadingPercent(10);
+
     const quantum = currentDataset.quantum;
     const model_class = currentDataset.model_class;
 
     GetVariablesPromise(newDataset).then(
       (variableResult) => {
+        setLoadingPercent(33);
         let newVariable = currentVariable;
         let newVariableScale = dataset.variable_scale;
         let variable_range = {};
@@ -60,6 +69,7 @@ const DatasetPanel = (props) => {
 
         GetTimestampsPromise(newDataset, newVariable).then(
           (timeResult) => {
+            setLoadingPercent(66);
             const timeData = timeResult.data;
             setDatasetTimestamps(timeData);
             let newTime = timeData[timeData.length - 1].id;
@@ -84,6 +94,7 @@ const DatasetPanel = (props) => {
 
             GetDepthsPromise(newDataset, newVariable).then(
               (depthResult) => {
+                setLoadingPercent(90);
                 setDataset({
                   id: newDataset,
                   model_class: model_class,
@@ -98,6 +109,9 @@ const DatasetPanel = (props) => {
                 });
                 setDatasetVariables(variableResult.data);
                 setDatasetDepths(depthResult.data);
+
+                setLoadingPercent(100);
+                setLoading(false)
               },
               (error) => {
                 console.error(error);
@@ -261,7 +275,7 @@ const DatasetPanel = (props) => {
   }
 
   return (
-    <div>
+    <>
       <Card>
         <Card.Header>Dataset Options</Card.Header>
         <Card.Body>
@@ -271,7 +285,15 @@ const DatasetPanel = (props) => {
           {timeSelector}
         </Card.Body>
       </Card>
-    </div>
+      <Modal show={loading} backdrop size="sm" dialogClassName="loading-modal">
+        <Modal.Header>
+          <Modal.Title>{`${"Loading..."}`}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ProgressBar now={loadingPercent} />
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 
