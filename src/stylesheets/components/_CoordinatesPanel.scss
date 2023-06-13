@@ -1,0 +1,19 @@
+.coordinates-table {
+  min-height: 100px !important;
+  max-height: 200px !important;
+  overflow: auto;
+}
+.idx-col {
+  width: 5%;
+}
+
+.button-col {
+  width: 5%;
+}
+
+.coords-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}

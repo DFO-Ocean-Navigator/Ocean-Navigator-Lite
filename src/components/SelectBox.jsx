@@ -1,6 +1,5 @@
 import React from "react";
 import Form from "react-bootstrap/Form";
-import Col from "react-bootstrap/Col";
 
 function SelectBox(props) {
   let options = null;
@@ -14,14 +13,13 @@ function SelectBox(props) {
     });
   }
 
-  const disabled = !Array.isArray(props.options) || !props.options.length;
+  const disabled = !Array.isArray(props.options) || !props.options.length || props.disabled;
 
   return (
-    <Form.Group controlid={`formgroup-${props.id}-selectbox`} as={Col}>
-      <Form.Label column>{props.label}</Form.Label>
+    <Form.Group className="selectbox" controlid={`formgroup-${props.id}-selectbox`} >
+      <Form.Label className="label">{props.label}</Form.Label>
       <Form.Select
         name={props.name}
-        placeholder={disabled ? "Loading..." : props.placeholder}
         onChange={(e) => {
           props.onChange(e.target.name, e.target.value);
         }}

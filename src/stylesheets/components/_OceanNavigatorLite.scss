@@ -2,7 +2,21 @@
   justify-content: right;
 }
 
+.buttons-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  margin: 10px 0px;
+}
+
 .submit-container {
   display: flex;
-  justify-content: right;
+  position: absolute;
+  right: 0px;
+
+  .option-select {
+    width: 100px;
+  }
 }

@@ -9,12 +9,14 @@ import {
 } from "../remote/ONavRequests";
 
 import SelectBox from "./SelectBox.jsx";
+import TimePicker from "./TimePicker.jsx";
 
 const DatasetPanel = (props) => {
   const [availableDatasets, setAvailableDatasets] = useState([]);
   const [dataset, setDataset] = useState(props.dataset);
   const [datasetVariables, setDatasetVariables] = useState([]);
   const [datasetDepths, setDatasetDepths] = useState([]);
+  const [datasetTimestamps, setDatasetTimestamps] = useState([]);
 
   useEffect(() => {
     GetDatasetsPromise().then((result) => {
@@ -59,7 +61,7 @@ const DatasetPanel = (props) => {
         GetTimestampsPromise(newDataset, newVariable).then(
           (timeResult) => {
             const timeData = timeResult.data;
-            props.updateTimestamps(timeData);
+            setDatasetTimestamps(timeData);
             let newTime = timeData[timeData.length - 1].id;
             let newStarttime =
               timeData.length > 20
@@ -192,41 +194,81 @@ const DatasetPanel = (props) => {
   );
 
   let depthSelector = null;
-  if (
-    datasetDepths &&
-    datasetDepths.length > 0 &&
-    !dataset.variable_two_dimensional
-  ) {
-    depthSelector = (
-      <SelectBox
-        key="depth"
-        name="depth"
-        label="Depth"
-        options={datasetDepths}
-        onChange={updateDataset}
-        selected={
-          datasetDepths.filter((d) => {
-            let depth = parseInt(dataset.depth);
-            if (isNaN(depth)) {
-              // when depth == "bottom" or "all"
-              depth = dataset.depth;
-            }
+  depthSelector = (
+    <SelectBox
+      key="depth"
+      name="depth"
+      label="Depth"
+      options={datasetDepths}
+      onChange={updateDataset}
+      disabled={dataset.variable_two_dimensional}
+      selected={
+        datasetDepths.length > 0
+          ? datasetDepths.filter((d) => {
+              let depth = parseInt(dataset.depth);
+              if (isNaN(depth)) {
+                // when depth == "bottom" or "all"
+                depth = dataset.depth;
+              }
 
-            return d.id === depth;
-          })[0].id
-        }
-      />
+              return d.id === depth;
+            })[0].id
+          : 0
+      }
+    />
+  );
+
+  let timeSelector = null;
+  if (dataset.time > 0 && props.plotType === "timeseries") {
+    timeSelector = (
+      <div className="timeselector-container">
+        <TimePicker
+          key="starttime"
+          id="starttime"
+          state={dataset.starttime}
+          title={"Start Time (UTC)"}
+          onUpdate={props.updateDataset}
+          max={dataset.time}
+          dataset={dataset}
+          timestamps={datasetTimestamps}
+        />
+        <TimePicker
+          key="time"
+          id="time"
+          state={props.dataset.time}
+          title={"End Time (UTC)"}
+          onUpdate={props.updateDataset}
+          min={props.dataset.starttime}
+          dataset={props.dataset}
+          timestamps={datasetTimestamps}
+        />
+      </div>
+    );
+  } else if (props.dataset.time > 0) {
+    timeSelector = (
+      <div className="timeselector-container">
+        <TimePicker
+          key="time"
+          id="time"
+          state={props.dataset.time}
+          onUpdate={props.updateDataset}
+          title={"Time (UTC)"}
+          dataset={props.dataset}
+          timestamps={datasetTimestamps}
+        />
+      </div>
     );
   }
 
   return (
     <div>
       <Card>
-        <Card.Header>Dataset</Card.Header>
-        <Card.Body style={{ display: "flex" }}>
+        <Card.Header>Dataset Options</Card.Header>
+        <Card.Body>
           {datasetSelector}
           {variableSelector}
           {depthSelector}
+          {timeSelector}
         </Card.Body>
       </Card>
     </div>

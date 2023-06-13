@@ -7,7 +7,6 @@
   overflow: hidden;
 }
 
-
 .app {
   z-index: 10;
   background-color: white;
@@ -15,5 +14,5 @@
   top: 10vh;
   bottom: 10vh;
   left: 5vw;
-  right: 5vw;;
+  right: 5vw;
 }

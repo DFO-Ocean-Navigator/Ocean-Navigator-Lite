@@ -1,7 +1,5 @@
 import React, { useState, useEffect, forwardRef } from "react";
 import Button from "react-bootstrap/Button";
-import Col from "react-bootstrap/Col"
-import Row from "react-bootstrap/Row";
 import Dropdown from "react-bootstrap/Dropdown";
 import InputGroup from "react-bootstrap/InputGroup";
 import Form from "react-bootstrap/Form";
@@ -260,7 +258,7 @@ function TimePicker(props) {
   );
 
   return (
-    <InputGroup className="timepicker" as={Col}>
+    <InputGroup className="timepicker">
       <label className="timepicker-label">{props.title}</label>
       <Dropdown drop="down">
         <div className="button-container">

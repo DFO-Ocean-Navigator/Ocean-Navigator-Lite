@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 
+import Form from "react-bootstrap/Form";
+import ToggleButton from "react-bootstrap/ToggleButton";
+
 import DatasetPanel from "./DatasetPanel.jsx";
-import PlotPanel from "./PlotPanel.jsx";
-import CoordsPanel from "./CoordsPanel.jsx";
+import CoordinatesPanel from "./CoordinatesPanel.jsx";
 import submitQuery from "../remote/SubmitQuery";
 import { GetPlot } from "../remote/ONavRequests";
 
@@ -21,24 +23,28 @@ const DATASET_DEFAULTS = Object.freeze({
 
 function OceanNavigatorLite() {
   const [plotType, setPlotType] = useState("profile");
+  const [outputFormat, setOutputFormat] = useState("csv");
   const [dataset, setDataset] = useState(DATASET_DEFAULTS);
-  const [timestamps, setTimestamps] = useState([]);
   const [coordinates, setCoordinates] = useState([]);
   const [query, setQuery] = useState("");
 
-  // const queryOptions = {
-  //   type: plotType,
-  //   dataset: dataset,
-  //   variable: variable,
-  //   startTime: startTime,
-  //   endTime: endTime,
-  //   depth: selectedDepth,
-  //   coords: coordinates,
-  // };
+  const radios = [
+    { name: "Profile", value: "profile" },
+    { name: "Virtual Mooring", value: "timeseries" },
+    { name: "Transect", value: "transect" },
+    { name: "Area", value: "map" },
+  ];
 
-  // useEffect(() => {
-  //   setQuery(submitQuery(queryOptions));
-  // }, [queryOptions]);
+  const queryOptions = {
+    dataset,
+    coords: coordinates,
+    plotType: plotType,
+    outputFormat: outputFormat,
+  };
+
+  useEffect(() => {
+    setQuery(submitQuery(queryOptions));
+  }, [queryOptions]);
 
   const updateDataset = (key, value) => {
     switch (key) {
@@ -53,10 +59,6 @@ function OceanNavigatorLite() {
           };
         });
     }
-  };
-
-  const updateTimestamps = (newTimestamps) => {
-    setTimestamps(newTimestamps);
   };
 
   const removeCoord = (id) => {
@@ -77,6 +79,11 @@ function OceanNavigatorLite() {
     setCoordinates([...coords]);
   };
 
+  const handleRadio = (e) => {
+    let type = e.currentTarget.value;
+    setPlotType(type);
+  };
+
   const handleSubmit = () => {
     let fileName = plotType + "_" + dataset.id + "_" + dataset.variable;
     GetPlot(query, fileName);
@@ -87,17 +94,9 @@ function OceanNavigatorLite() {
       <DatasetPanel
         dataset={dataset}
         updateDataset={updateDataset}
-        updateTimestamps={updateTimestamps}
+        plotType={plotType}
       />
-      <PlotPanel
-        dataset={dataset}
-        timestamps={timestamps}
-        updateDataset={updateDataset}
-        updatePlotType={(newPlotType) => {
-          setPlotType(newPlotType);
-        }}
-      />
-      <CoordsPanel
+      <CoordinatesPanel
         coordinates={coordinates}
         updateCoords={(coords) => {
           setCoordinates((prevCoords) => [...prevCoords, coords]);
@@ -116,10 +115,35 @@ function OceanNavigatorLite() {
           cols="50"
           wrap="hard"
           value={query}
-        ></textarea>
+        />
       </div>
-      <div className="submit-container">
-        <button onClick={handleSubmit}>Submit</button>
+      <div className="buttons-container">
+        <div className="radios-container">
+          {radios.map((radio, idx) => (
+            <ToggleButton
+              key={idx}
+              id={`radio-${idx}`}
+              type="radio"
+              name="radio"
+              value={radio.value}
+              checked={plotType === radio.value}
+              onChange={handleRadio}
+            >
+              {radio.name}
+            </ToggleButton>
+          ))}
+        </div>
+
+        <div className="submit-container">
+          <Form.Select
+            className="option-select"
+            onChange={(e) => setOutputFormat(e.target.value)}
+          >
+            <option>csv</option>
+            <option>png</option>
+          </Form.Select>
+          <button onClick={handleSubmit}>Submit</button>
+        </div>
       </div>
     </div>
   );

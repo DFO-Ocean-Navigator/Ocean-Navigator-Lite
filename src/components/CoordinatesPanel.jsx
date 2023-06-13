@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 
-const CoordsPanel = (props) => {
+const CoordinatesPanel = (props) => {
   const [enteredLat, setEnteredLat] = useState("");
   const [enteredLon, setEnteredLon] = useState("");
   const [tableEntries, setTableEntries] = useState([]);
@@ -37,7 +37,9 @@ const CoordsPanel = (props) => {
         row: props.coordinates.length + 1,
         lon: e.target[0].value,
         lat: e.target[1].value,
-        id: e.target[0].value + e.target[1].value,
+        id: `${props.coordinates.length + 1}-${e.target[0].value}-${
+          e.target[1].value
+        }`,
       });
       setEnteredLat("");
       setEnteredLon("");
@@ -57,20 +59,22 @@ const CoordsPanel = (props) => {
       <Card>
         <Card.Header>Coordinate Options</Card.Header>
         <Card.Body>
-          <Table striped bordered size="sm">
-            <thead>
-              <tr>
-                <th style={{ width: "5%" }}>#</th>
-                <th>Longitude</th>
-                <th>Latitude</th>
-                <th style={{ width: "5%", borderColor: "transparent" }}></th>
-              </tr>
-            </thead>
-            <tbody>{tableEntries}</tbody>
-          </Table>
+          <div className="coordinates-table">
+            <Table striped bordered size="sm">
+              <thead>
+                <tr>
+                  <th className="idx-col">#</th>
+                  <th>Longitude</th>
+                  <th>Latitude</th>
+                  <th className="button-col" />
+                </tr>
+              </thead>
+              <tbody>{tableEntries}</tbody>
+            </Table>
+          </div>
 
           <form onSubmit={submitHandler}>
-            <div style={{ display: "flex", justifyContent: "right" }}>
+            <div className="coords-form">
               <label>Longitude:</label>
               <input
                 type="number"
@@ -101,4 +105,4 @@ const CoordsPanel = (props) => {
   );
 };
 
-export default CoordsPanel;
+export default CoordinatesPanel;
