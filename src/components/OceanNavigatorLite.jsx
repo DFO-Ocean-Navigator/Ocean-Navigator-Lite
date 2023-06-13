@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 
 import Form from "react-bootstrap/Form";
+import Modal from "react-bootstrap/Modal";
 import ToggleButton from "react-bootstrap/ToggleButton";
 
 import DatasetPanel from "./DatasetPanel.jsx";
@@ -27,6 +28,7 @@ function OceanNavigatorLite() {
   const [dataset, setDataset] = useState(DATASET_DEFAULTS);
   const [coordinates, setCoordinates] = useState([]);
   const [query, setQuery] = useState("");
+  const [showAlert, setShowAlert] = useState(false);
 
   const radios = [
     { name: "Profile", value: "profile" },
@@ -85,9 +87,52 @@ function OceanNavigatorLite() {
   };
 
   const handleSubmit = () => {
-    let fileName = plotType + "_" + dataset.id + "_" + dataset.variable;
-    GetPlot(query, fileName);
+    if (
+      (plotType === "profile" && coordinates.length < 1) ||
+      (plotType === "timeseries" && coordinates.length < 1) ||
+      (plotType === "transect" && coordinates.length < 2) ||
+      (plotType === "map" && coordinates.length < 3)
+    ) {
+      setShowAlert(true);
+    } else {
+      let fileName = `${plotType}_${dataset.id}_${dataset.variable}.${outputFormat}`;
+      GetPlot(query, fileName);
+    }
   };
+
+  let alertMessage = null;
+  switch (plotType) {
+    case "profile":
+      alertMessage =
+        "1 or more coordinates are required to produce Profile data.";
+      break;
+    case "timeseries":
+      alertMessage =
+        "1 or more coordinates are required to produce Virtual Mooring data.";
+      break;
+    case "transect":
+      alertMessage =
+        "2 or more coordinates are required to produce Transect data.";
+      break;
+    case "map":
+      alertMessage = "3 or more coordinates are required to produce Area data.";
+      break;
+  }
+
+  const submitAlert = showAlert ? (
+    <Modal
+      show={showAlert}
+      onHide={() => setShowAlert(false)}
+      backdrop
+      size="sm"
+      dialogClassName="loading-modal"
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>Insuffienct coordinates!</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>{alertMessage}</Modal.Body>
+    </Modal>
+  ) : null;
 
   return (
     <div className="onav-lite">
@@ -95,6 +140,7 @@ function OceanNavigatorLite() {
         dataset={dataset}
         updateDataset={updateDataset}
         plotType={plotType}
+        updatePlotType={(newPlotType) => setPlotType(newPlotType)}
       />
       <CoordinatesPanel
         coordinates={coordinates}
@@ -115,6 +161,7 @@ function OceanNavigatorLite() {
           cols="50"
           wrap="hard"
           value={query}
+          className="query-text"
         />
       </div>
       <div className="buttons-container">
@@ -128,6 +175,10 @@ function OceanNavigatorLite() {
               value={radio.value}
               checked={plotType === radio.value}
               onChange={handleRadio}
+              disabled={
+                dataset.variable_two_dimensional &&
+                (radio.value === "profile" || radio.value === "transect")
+              }
             >
               {radio.name}
             </ToggleButton>
@@ -145,6 +196,7 @@ function OceanNavigatorLite() {
           <button onClick={handleSubmit}>Submit</button>
         </div>
       </div>
+      {submitAlert}
     </div>
   );
 }

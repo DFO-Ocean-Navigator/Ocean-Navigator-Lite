@@ -1,5 +1,9 @@
 .query-container {
   justify-content: right;
+
+  .query-text {
+    word-break: break-all;
+  }
 }
 
 .buttons-container {
@@ -19,4 +23,10 @@
   .option-select {
     width: 100px;
   }
+}
+
+.submit-alert{
+  z-index: 100;
+  position: absolute;
+  top: 0.4vh;
 }

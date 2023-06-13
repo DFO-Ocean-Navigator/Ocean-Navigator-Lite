@@ -1,13 +1,12 @@
 import { cacheAdapterEnhancer } from "axios-extensions";
 
 const axios = require("axios");
-// const FileDownload = require("js-file-download");
+const FileDownload = require("js-file-download");
 
 const url = "https://navigator.oceansdata.ca/api/v2.0/";
 
 const instance = axios.create({
   headers: { "Content-Type": "application/json" },
-  // adapter: cacheAdapterEnhancer(axios.defaults.adapter),
 });
 
 export function GetDatasetsPromise() {
@@ -47,6 +46,6 @@ export function GetPlot(query, fileName) {
     method: "GET",
     responseType: "blob",
   }).then((response) => {
-    // FileDownload(response.data, fileName + ".csv");
+    FileDownload(response.data, fileName);
   });
 }

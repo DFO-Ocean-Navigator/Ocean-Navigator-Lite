@@ -107,13 +107,13 @@ function TimePicker(props) {
     // assumes timestamp is not on boundary
     let year = time.getFullYear();
     if (new Date(year - 1, 10, 30) <= time && time <= new Date(year, 1, 29)) {
-      return climatology ? __("Winter") : `${__("Winter")} ${year - 1}`;
+      return climatology ? "Winter" : `${"Winter"} ${year - 1}`;
     } else if (new Date(year, 1, 29) <= time && time <= new Date(year, 3, 31)) {
-      return climatology ? __("Spring") : `${__("Spring")} ${year}`;
+      return climatology ? "Spring" : `${"Spring"} ${year}`;
     } else if (new Date(year, 4, 1) <= time && time <= new Date(year, 7, 31)) {
-      return climatology ? __("Summer") : `${__("Summer")} ${year}`;
+      return climatology ? "Summer" : `${"Summer"} ${year}`;
     } else {
-      return climatology ? __("Fall") : `${__("Fall")} ${year}`;
+      return climatology ? "Fall" : `${"Fall"} ${year}`;
     }
   };
 

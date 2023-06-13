@@ -57,6 +57,7 @@ const DatasetPanel = (props) => {
         let newVariableScale = dataset.variable_scale;
         let variable_range = {};
         variable_range[newVariable] = null;
+        let variable_two_dimensional = null;
         const variableIds = variableResult.data.map((v) => {
           return v.id;
         });
@@ -64,7 +65,13 @@ const DatasetPanel = (props) => {
         if (!variableIds.includes(currentVariable)) {
           newVariable = variableResult.data[0].id;
           newVariableScale = variableResult.data[0].scale;
+          variable_two_dimensional = variableResult.data[0].two_dimensional;
           variable_range[newVariable] = null;
+        } else {
+          let variable_data = variableResult.data.filter((v) => {
+            return v.id === currentVariable;
+          });
+          variable_two_dimensional = variable_data[0].two_dimensional;
         }
 
         GetTimestampsPromise(newDataset, newVariable).then(
@@ -106,12 +113,20 @@ const DatasetPanel = (props) => {
                   variable_scale: newVariableScale,
                   variable_range: variable_range,
                   quiverVariable: "None",
+                  variable_two_dimensional: variable_two_dimensional,
                 });
                 setDatasetVariables(variableResult.data);
                 setDatasetDepths(depthResult.data);
 
+                if (
+                  variable_two_dimensional &&
+                  (props.plotType === "profile" || props.plotType === "transect")
+                ) {
+                  props.updatePlotType("timeseries");
+                }
+
                 setLoadingPercent(100);
-                setLoading(false)
+                setLoading(false);
               },
               (error) => {
                 console.error(error);
@@ -152,6 +167,13 @@ const DatasetPanel = (props) => {
     setDataset((prevDataset) => {
       return { ...prevDataset, ...newDataset };
     });
+
+    if (
+      variable.two_dimensional &&
+      (props.plotType === "profile" || props.plotType === "transect")
+    ) {
+      props.updatePlotType("timeseries");
+    }
   };
 
   const updateDataset = (key, value) => {
@@ -287,7 +309,7 @@ const DatasetPanel = (props) => {
       </Card>
       <Modal show={loading} backdrop size="sm" dialogClassName="loading-modal">
         <Modal.Header>
-          <Modal.Title>{`${"Loading..."}`}</Modal.Title>
+          <Modal.Title>Loading...</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <ProgressBar now={loadingPercent} />
