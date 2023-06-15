@@ -1,11 +1,12 @@
 const path = require("path");
-
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
   entry: "./src/index.js",
   output: {
-    filename: "main.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "public"),
     publicPath: "/public/",
   },
@@ -13,6 +14,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.join(__dirname, "/src", "index.html"),
     }),
+    new MiniCssExtractPlugin(),
   ],
   module: {
     rules: [
@@ -24,8 +26,8 @@ module.exports = {
         },
       },
       {
-        test: /\.(sa|sc|c)ss$/, // styles files
-        use: ["style-loader", "css-loader", "sass-loader"],
+        test: /.s?css$/,
+        use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
       },
       {
         test: /\.(png|gif|svg|eot|woff2?|ttf|svg)(\?.*)?$/,
@@ -34,6 +36,20 @@ module.exports = {
           name: "/[name].[ext]",
         },
       },
+    ],
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        reactVendor: {
+          test: /[\\/]node_modules[\\/](react|react-dom|react-router-dom|react-bootstrap|react-bootstrap-icons)[\\/]/,
+          name: "vendor-react",
+          chunks: "all",
+        },
+      },
+    },
+    minimizer: [
+      new CssMinimizerPlugin(),
     ],
   },
   resolve: {
