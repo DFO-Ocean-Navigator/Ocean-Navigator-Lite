@@ -40,12 +40,13 @@ export function GetDepthsPromise(dataset, variable) {
   });
 }
 
-export function GetPlot(query, fileName) {
+export function GetPlot(query, fileName, setShowDownloading) {
   return axios({
     url: query,
     method: "GET",
     responseType: "blob",
   }).then((response) => {
     FileDownload(response.data, fileName);
+    setShowDownloading(false);
   });
 }

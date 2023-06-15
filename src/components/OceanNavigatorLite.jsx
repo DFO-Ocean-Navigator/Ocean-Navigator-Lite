@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
+import ProgressBar from "react-bootstrap/ProgressBar";
 import ToggleButton from "react-bootstrap/ToggleButton";
 
 import DatasetPanel from "./DatasetPanel.jsx";
@@ -29,6 +30,7 @@ function OceanNavigatorLite() {
   const [coordinates, setCoordinates] = useState([]);
   const [query, setQuery] = useState("");
   const [showAlert, setShowAlert] = useState(false);
+  const [showDownloading, setShowDownloading] = useState(false);
 
   const radios = [
     { name: "Profile", value: "profile" },
@@ -95,8 +97,9 @@ function OceanNavigatorLite() {
     ) {
       setShowAlert(true);
     } else {
+      setShowDownloading(true)
       let fileName = `${plotType}_${dataset.id}_${dataset.variable}.${outputFormat}`;
-      GetPlot(query, fileName);
+      GetPlot(query, fileName, setShowDownloading);
     }
   };
 
@@ -197,6 +200,14 @@ function OceanNavigatorLite() {
         </div>
       </div>
       {submitAlert}
+      <Modal show={showDownloading} backdrop size="sm" dialogClassName="loading-modal">
+        <Modal.Header>
+          <Modal.Title>Downloading...</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <ProgressBar now={100} animated/>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 }
