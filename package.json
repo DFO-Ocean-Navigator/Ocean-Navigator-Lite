@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --mode production",
-    "dev": "webpack --watch --mode development",
+    "dev": "webpack serve --mode development",
     "serve": "webpack serve --mode production",
     "stats": "webpack --json > stats.json"
   },
@@ -16,6 +16,7 @@
     "axios-extensions": "^3.1.6",
     "bootstrap": "^5.3.0",
     "js-file-download": "^0.4.12",
+    "papaparse": "^5.4.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.4",
     "react-bootstrap-icons": "^1.10.3",

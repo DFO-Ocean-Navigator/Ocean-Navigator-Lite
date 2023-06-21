@@ -9,8 +9,8 @@ function submitQuery(q) {
   }
 
   const coords = q.coords.map((coord) => [
-    parseFloat(coord.lon),
     parseFloat(coord.lat),
+    parseFloat(coord.lon),
   ]);
 
   switch (q.plotType) {
@@ -77,8 +77,11 @@ function submitQuery(q) {
       break;
   }
 
-  const queryUrl =
-    `https://navigator.oceansdata.ca/api/v2.0/plot/${q.plotType}?query=${encodeURIComponent(JSON.stringify(query))}&save=True&format=${q.outputFormat}`;
+  const queryUrl = `https://navigator.oceansdata.ca/api/v2.0/plot/${
+    q.plotType
+  }?query=${encodeURIComponent(JSON.stringify(query))}&save=True&format=${
+    q.outputFormat
+  }`;
   return queryUrl;
 }
 
