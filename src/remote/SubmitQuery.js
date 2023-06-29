@@ -57,6 +57,7 @@ function submitQuery(q) {
           polygons: [coords],
         },
       ];
+      query.bathymetry = true;
       query.projection = "EPSG:3857";
       query.quiver = {
         colormap: "default",
