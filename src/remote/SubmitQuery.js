@@ -78,7 +78,7 @@ function submitQuery(q) {
       break;
   }
 
-  const queryUrl = `https://navigator.oceansdata.ca/api/v2.0/plot/${
+  const queryUrl = `https://www.oceannavigator.ca/api/v2.0/plot/${
     q.plotType
   }?query=${encodeURIComponent(JSON.stringify(query))}&save=True&format=${
     q.outputFormat

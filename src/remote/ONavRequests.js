@@ -3,7 +3,7 @@ import { cacheAdapterEnhancer } from "axios-extensions";
 const axios = require("axios");
 const FileDownload = require("js-file-download");
 
-const url = "https://navigator.oceansdata.ca/api/v2.0/";
+const url = "https://www.oceannavigator.ca/api/v2.0/";
 
 const instance = axios.create({
   headers: { "Content-Type": "application/json" },
