@@ -103,6 +103,22 @@ function OceanNavigatorLite() {
     }
   };
 
+  const handleOutputFormatChange = (newFormat) => {
+    let format = null;
+    switch (newFormat.target.value) {
+      case "csv":
+        format = "csv";
+        break;
+      case "png":
+        format = "png";
+        break;
+      case "NetCDF":
+        format = "nc";
+        break;
+    }
+    setOutputFormat(format)
+  }
+
   let alertMessage = null;
   switch (plotType) {
     case "profile":
@@ -191,10 +207,11 @@ function OceanNavigatorLite() {
         <div className="submit-container">
           <Form.Select
             className="option-select"
-            onChange={(e) => setOutputFormat(e.target.value)}
+            onChange={handleOutputFormatChange}
           >
             <option>csv</option>
             <option>png</option>
+            <option>NetCDF</option>
           </Form.Select>
           <button onClick={handleSubmit}>Submit</button>
         </div>
@@ -205,7 +222,7 @@ function OceanNavigatorLite() {
           <Modal.Title>Downloading...</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <ProgressBar now={100} animated/>
+          <ProgressBar now={100} animated />
         </Modal.Body>
       </Modal>
     </div>
