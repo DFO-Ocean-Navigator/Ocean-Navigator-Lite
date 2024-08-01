@@ -89,10 +89,8 @@ const CoordinatesPanel = (props) => {
           const lon = findKey(["longitude", "lon"]);
           if (lat == -1 || lon == -1) {
             alert(
-              __(
                 "Error: Could not find latitude or longitude column in file: "
-              ) + file.name
-            );
+              ) + file.name;
             return;
           }
 
