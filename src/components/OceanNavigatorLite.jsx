@@ -65,6 +65,22 @@ function OceanNavigatorLite() {
     }
   };
 
+  const addCoords = (newCoords) => {
+    setCoordinates((prevCoords) => [...prevCoords, newCoords]);
+  }
+
+  const updateCoords = (newCoords) => {
+    let coords = [...coordinates];
+
+    const toReplace = coords.findIndex((coord) => {
+      return coord.id === newCoords.id ? true : false;
+    });
+
+    coords[toReplace] = newCoords;
+
+    setCoordinates(coords)
+  }
+
   const removeCoord = (id) => {
     let coords = coordinates;
 
@@ -163,9 +179,8 @@ function OceanNavigatorLite() {
       />
       <CoordinatesPanel
         coordinates={coordinates}
-        updateCoords={(coords) => {
-          setCoordinates((prevCoords) => [...prevCoords, coords]);
-        }}
+        addCoords={addCoords}
+        updateCoords={updateCoords}
         clearCoords={() => {
           setCoordinates([]);
         }}

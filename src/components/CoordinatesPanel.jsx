@@ -17,8 +17,30 @@ const CoordinatesPanel = (props) => {
         return (
           <tr key={"entry_" + coord.id}>
             <td>{coord.row}</td>
-            <td>{coord.lat}</td>
-            <td>{coord.lon}</td>
+            <td>
+              <input
+                type="number"
+                id={coord.id}
+                key={`row_${coord.id}_lat`}
+                className="cord-input"
+                value={coord.lat}
+                onChange={(e) => updateLat(e, coord.id)}
+                min={-90}
+                max={90}
+              />
+            </td>
+            <td>
+              <input
+                type="number"
+                id={coord.id}
+                key={`row_${coord.id}_lon`}
+                className="cord-input"
+                value={coord.lon}
+                onChange={(e) => updateLon(e, coord.id)}
+                min={-180}
+                max={360}                
+              />
+            </td>
             <td>
               <button
                 className="removeCoord"
@@ -36,18 +58,39 @@ const CoordinatesPanel = (props) => {
   const submitHandler = (e) => {
     e.preventDefault();
     if ((e.target[0].value.length > 0) & (e.target[1].value.length > 0)) {
-      props.updateCoords({
+      props.addCoords({
         row: props.coordinates.length + 1,
         lat: e.target[0].value,
         lon: e.target[1].value,
-        id: `${props.coordinates.length + 1}-${e.target[0].value}-${
-          e.target[1].value
-        }`,
+        id: `${props.coordinates.length + 1}-${e.target[0].value}-${e.target[1].value
+          }`,
       });
       setEnteredLat("");
       setEnteredLon("");
     }
   };
+
+  const updateLat = (e, id) => {
+    const newLat = e.target.value;
+    const newCoords = JSON.parse(JSON.stringify(props.coordinates));
+    const idx = newCoords.findIndex((coord) => {
+      return coord.id === id ? true : false;
+    });
+    newCoords[idx].lat = newLat
+    
+    props.updateCoords(newCoords[idx])
+  }
+
+  const updateLon = (e, id) => {
+    const newLon = e.target.value;
+    const newCoords = JSON.parse(JSON.stringify(props.coordinates));
+    const idx = newCoords.findIndex((coord) => {
+      return coord.id === id ? true : false;
+    });
+    newCoords[idx].lon = newLon
+    
+    props.updateCoords(newCoords[idx])
+  }
 
   const latChangeHandler = (e) => {
     setEnteredLat(parseFloat(e.target.value));
@@ -89,8 +132,8 @@ const CoordinatesPanel = (props) => {
           const lon = findKey(["longitude", "lon"]);
           if (lat == -1 || lon == -1) {
             alert(
-                "Error: Could not find latitude or longitude column in file: "
-              ) + file.name;
+              "Error: Could not find latitude or longitude column in file: "
+            ) + file.name;
             return;
           }
 
@@ -103,13 +146,12 @@ const CoordinatesPanel = (props) => {
           });
 
           for (let idx in points) {
-            props.updateCoords({
+            props.addCoords({
               row: props.coordinates.length + parseInt(idx) + 1,
               lat: points[idx][0].toString(),
               lon: points[idx][1].toString(),
-              id: `${props.coordinates.length + 1}-${points[idx][0]}-${
-                points[idx][1]
-              }`,
+              id: `${props.coordinates.length + 1}-${points[idx][0]}-${points[idx][1]
+                }`,
             });
           }
         },
