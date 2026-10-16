@@ -1,18 +1,14 @@
 .background {
-  width: 100%;
-  height: 100%;
-  background: url("./intro-bg.jpg") no-repeat bottom center scroll;
-  background-color: black;
-  background-size: cover;
-  overflow: hidden;
-}
-
-.app {
-  z-index: 10;
-  background-color: white;
-  position: absolute;
-  top: 10vh;
-  bottom: 10vh;
-  left: 5vw;
-  right: 5vw;
-}
+    display: table;
+    width: 100%;
+    height: 100%;
+    padding: 200px 0;
+    text-align: center;
+    color: #fcfdfd;
+    background: url("/intro-bg.jpg") no-repeat bottom center scroll;
+    background-color: black;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+  }
