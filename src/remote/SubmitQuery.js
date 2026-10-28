@@ -34,7 +34,7 @@ function submitQuery(q) {
       query.neighbours = 10;
       break;
     case "transect":
-      query.variable = q.variable;
+      query.variable = q.dataset.variable;
       query.time = q.dataset.time;
       query.variable_range = `${q.dataset.variable_scale[0]},${q.dataset.variable_scale[1]},auto`;
       query.path = coords;
@@ -47,6 +47,7 @@ function submitQuery(q) {
       query.profile_distance = -1;
       break;
     case "map":
+       query.variable = q.dataset.variable;
       query.time = q.dataset.time;
       query.variable_range = `${q.dataset.variable_scale[0]},${q.dataset.variable_scale[1]},auto`;
       query.depth = q.dataset.depth;
@@ -58,7 +59,7 @@ function submitQuery(q) {
           polygons: [coords],
         },
       ];
-      query.bathymetry = true;
+       query.bathymetry = true;
       query.projection = "EPSG:3857";
       query.quiver = {
         colormap: "default",
