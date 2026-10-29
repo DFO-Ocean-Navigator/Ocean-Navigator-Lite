@@ -1,7 +1,7 @@
 function submitQuery(q) {
   const query = {
     dataset: q.dataset.id,
-    names: [],
+    names: [null],
   };
 
   if (q.plotTitle !== null) {
@@ -15,7 +15,7 @@ function submitQuery(q) {
 
   switch (q.plotType) {
     case "profile":
-      query.variable_range = null;
+      query.variable_range = [null];
       query.variable = q.dataset.variable;
       query.station = coords;
       query.showmap = false;
@@ -34,18 +34,20 @@ function submitQuery(q) {
       query.neighbours = 10;
       break;
     case "transect":
-      query.variable = q.variable;
+      query.variable = q.dataset.variable;
       query.time = q.dataset.time;
       query.variable_range = `${q.dataset.variable_scale[0]},${q.dataset.variable_scale[1]},auto`;
       query.path = coords;
-      query.showmap = false;
+      query.showmap = true;
       query.surfacevariable = q.surfacevariable;
-      query.linearthresh = 200;
-      query.depth_limit = 0;
+      query.linearthresh = false;
+      query.depth_limit = false;
       query.colormap = "default";
       query.selectedPlots = "0,1,1";
+      query.profile_distance = -1;
       break;
     case "map":
+       query.variable = q.dataset.variable;
       query.time = q.dataset.time;
       query.variable_range = `${q.dataset.variable_scale[0]},${q.dataset.variable_scale[1]},auto`;
       query.depth = q.dataset.depth;
@@ -57,7 +59,7 @@ function submitQuery(q) {
           polygons: [coords],
         },
       ];
-      query.bathymetry = true;
+       query.bathymetry = true;
       query.projection = "EPSG:3857";
       query.quiver = {
         colormap: "default",
@@ -77,12 +79,17 @@ function submitQuery(q) {
       query.neighbours = 10;
       break;
   }
-
-  const queryUrl = `https://www.oceannavigator.ca/api/v2.0/plot/${
+   
+   let queryUrl = `https://www.oceannavigator.ca/api/v2.0/plot/${
     q.plotType
   }?query=${encodeURIComponent(JSON.stringify(query))}&save=True&format=${
     q.outputFormat
   }`;
+  if(q.outputFormat== 'png'){
+    queryUrl += '&size=10x7&dpi=144'
+
+  }
+
   return queryUrl;
 }
 
