@@ -1,7 +1,7 @@
 import { cacheAdapterEnhancer } from "axios-extensions";
 
-const axios = require("axios");
-const FileDownload = require("js-file-download");
+import axios from 'axios';
+import FileDownload from 'js-file-download';
 
 const url = "https://www.oceannavigator.ca/api/v2.0/";
 

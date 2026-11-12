@@ -2,9 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import OceanNavigatorLite from './components/OceanNavigatorLite.jsx'
 
-require("./stylesheets/main.scss");
-require("bootstrap/dist/css/bootstrap.css");
-require("./stylesheets/bootstrap.css");
+import './stylesheets/main.scss';
+import 'bootstrap/dist/css/bootstrap.css';
+import './stylesheets/bootstrap.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
